@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIC TAC TOE ODIN PROJECT</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Source+Sans+3:wght@200&display=swap');
+
+        * {
+
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+
+        }
+
+        body {
+
+            min-height: 100vh;
+            background: #DFDFDF;
+            font-family: 'Roboto', sans-serif;
+            font-family: 'Source Sans 3', sans-serif;
+
+        }
+
+        header section {
+
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            margin: 25px;
+            gap: 10px;
+
+        }
+
+        header h1 {
+
+           
+            font-size: 4rem;
+            color: black;
+        }
+
+
+        header button {
+
+            background: #343434;
+            padding: 10px;
+            color: white;
+            border: 0;
+            box-shadow: 0 0 3px #000;
+
+
+        }
+
+
+        .main-body {
+
+            color: #2F3061;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            gap: 100px;
+          
+
+        }
+
+        .main-body section {
+
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;;
+
+        }
+
+        .main-body section div  {
+
+            display: flex;
+            flex-flow: column;
+            row-gap: 10px;
+
+
+        }
+
+        footer {
+
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+
+        }
+
+        .main-body section div button {
+
+            color: #2F3061;
+            border: 0;
+            box-shadow: 0 0 3px #000;
+            width: 80px;
+            height: 40px;
+            font-size: 1.2rem;
+
+        }
+
+        .main-body section .player-1 button {
+
+
+            background: #BC9CB0;
+
+        }
+
+        .main-body section .player-2 button {
+
+            background: #6BA368;
+
+        }
+
+        .game-board {
+
+            margin-top: 50px;
+            place-content: center;
+            display: grid;
+            grid-template-columns: repeat(3, 150px);
+            grid-template-rows: repeat(3, 150px);
+            gap: 5px;
+        }
+
+        .cell {
+
+            font-size: 7rem;
+            font-weight: 600;
+            color: whitesmoke;
+            background: #343434;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .winner {
+
+            background: green;
+
+
+        }
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <section>
+            <h1>TIC TAC TOE</h1>
+        </section>
+        <section>
+            <button id="start-game">START GAME</button>
+            <button id="restart-button">RESTART</button>
+        </section>
+    </header>
+    <main  class="main-body">
+        <section>
+            <h1>Player1(O)</h1>
+            <div class="player-1">
+                <button class="human-button1">Human</button>
+                <button class="AI-button1">AI</button>
+            </div>
+        </section>
+        <section>
+            <h1>Player2(X)</h1>
+            <div class="player-2">
+            <button class="human-button2">Human</button>
+            <button class="AI-button2">AI</button>
+            </div>
+        </section>
+    </main>
+    <section class="game-board">
+
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+			<div class="cell" data-cell></div>
+
+    </section>
+    <footer style="text-align: center"><span>&copy;<a style="text-decoration: none; color:black;" href="https://github.com/Manaci4466" target="_blank">Manaci4466</a></span></footer>
+
+</body>
+<script>
+
+const cells = document.querySelectorAll(".cell");
+let playerX = false;
+var player1;
+var player2;
+var currentPlayer;
+let gameOver = false;
+const winningCombinations = [
+	[0, 1, 2],
+	[3, 4, 5],
+	[6, 7, 8],
+	[0, 3, 6],
+	[1, 4, 7],
+	[2, 5, 8],
+	[0, 4, 8],
+	[2, 4, 6],
+];
+
+// buttons
+
+const humanButton1 = document.querySelector(".human-button1");
+const humanButton2 = document.querySelector(".human-button2")
+const startButton = document.querySelector("#start-game");
+const restartButton = document.querySelector("#restart-button");
+
+// EventListener
+humanButton1.addEventListener("click",() => {player1 = player(prompt("Give player1"),"O");});
+humanButton2.addEventListener("click",() => {
+player2 = player(prompt("Give player2"),"X");
+})
+
+function start(){
+    
+    if(!player1 && !player2){
+        alert("give players");
+        return;
+    }
+cells.forEach((cell) => {
+
+    cell.addEventListener(("click"),handleCellClick)
+
+})
+    alert("working");
+
+}
+
+
+startButton.addEventListener("click",start);
+restartButton.addEventListener("click",restart);
+
+
+
+
+function player(name,marker){
+
+
+    return {name,marker}
+}
+
+
+function handleCellClick(event) {
+
+	const cell = event.target;
+	if (gameOver || cell.textContent !== "") {
+		return;
+	}
+	if (playerX) {
+		cell.textContent = "X";
+        currentPlayer = player2
+		checkWin("X");
+		playerX = false;
+
+    } else {
+		cell.textContent = "O";
+        currentPlayer = player1;
+		checkWin("O");
+		playerX = true;
+	}
+}
+
+function checkWin(player) {
+	for (let i = 0; i < winningCombinations.length; i++) {
+		const combination = winningCombinations[i];
+		if (
+			cells[combination[0]].textContent === player &&
+			cells[combination[1]].textContent === player &&
+			cells[combination[2]].textContent === player
+		) {
+			gameOver = true;
+			alert(`${currentPlayer.name} wins!`);
+			cells[combination[0]].classList.add("winner");
+			cells[combination[1]].classList.add("winner");
+			cells[combination[2]].classList.add("winner");
+            restart();
+            return;
+		}
+	}
+
+    if (Array.from(cells).every((cell) => cell.textContent !== "")) {
+		
+        gameOver = true
+        alert(`tie!`);
+        restart();
+        return;
+    }
+}   
+
+function restart(){
+
+    cells.forEach((cell) => {
+        
+        gameOver = false;
+        cell.classList.remove("winner")
+        cell.innerText = "";
+    })
+    
+}
+
+
+
+</script>
+</html>
